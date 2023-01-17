@@ -18,8 +18,10 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import date from 'date-and-time';
 
 
 
@@ -48,19 +50,27 @@ const Stockin = () => {
   const [item, setItem] = useState([]);
   const [supplierId, setSupplierId] = useState();
   const [productName, setProductName] = useState();
-  const [productType, setProductType] = useState();
-  const [unit, setUnit] = useState();
   const [array, setArray] = useState([])
   const [b, setB] = useState([])
   const [obj, setObj] = useState([])
   const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InNoYXJqZWVsc2siLCJfaWQiOiI2M2JmZmE2OTY2ZWJiYzg0MGQ4ZmZiODkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NzM1MzEyNzd9.9TU3mS2SgZLA8P3Rqop9z83fX0iWsPC1_UBi8HJXAEw"
+
+  //my hooks
+  const [docNo,setDocNo] = React.useState(0)
   const [allSuppliers,setAllSuppliers] = React.useState([])
+  const [allProducts,setAllProducts] = React.useState([])
+  const [selectedProduct,setSelectedProduct] = React.useState(null)
+  const [selectedSupplier,setSelectedSupplier] = React.useState(null)
+  const [productType, setProductType] = useState(null);
+  const [unit, setUnit] = useState(null);
+  const [selectedDate,setSelectedDate] = React.useState("")
 
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
+    setValue
   } = useForm();
 
   const handleChange = (event) => {
@@ -72,60 +82,20 @@ const Stockin = () => {
   const onSubmit = (stock) => {
 
     var obj = {
-      supplierId,
-      productName,
+      supplierId:selectedSupplier._id,
+      productName:selectedProduct.name,
+      productId:selectedProduct._id,
       productType,
       unit,
+      expiry:selectedDate,
       ...stock
 
     }
-   
-    array.push(obj)
     console.log(obj, 'obj')
 
-
-  };
-  const handelclick = () => {
-   
-      b.push(array)
-      setB(b)
-    
-   
-    console.log(b, 'b')
-    // console.log(stock,'stock')
-  }
-
-
-  const allProduct = async () => {
-    const res =  await axios.get("http://localhost:3002/api/product/getAllProducts",{headers:{token:`${accessToken}`}})
-    .then(res=>{
-      setProducts(res.data);
-      console.log(products,'products')
-    console.log(res.data,'res.data')
-    if (res.data !== undefined) {
-      res.data.result.map((item) => {
-        ProductsNames.push(item.name);
-        console.log(item.name,'itemkkhfhhfhfdhfdhfhfhfgd')
-        productTypes.push(item.type);
-        Units.push(item.unit);
-      });
-   }
-    })
-
-    
-
-
-   
-
-
   };
 
-  const getitem = async () => {
-    const re = await axios.post("http://localhost:3002/api/stock/stockIn",array,{headers:{token:`${accessToken}`}});
-     console.log(re.data, "reData");
-    setItem(re.data,'post data');
-  };     
-  console.log(item, "item");
+
 
   const getAllSuppliers = ()=>{
     axios.get(`${process.env.REACT_APP_DEVELOPMENT}/api/supplier/getAllSuppliers`,{headers:{token:`${accessToken}`}})
@@ -133,12 +103,23 @@ const Stockin = () => {
       setAllSuppliers(res.data.result)
     })
   }
+  const getAllProducts = ()=>{
+    axios.get(`${process.env.REACT_APP_DEVELOPMENT}/api/product/getAllProducts`,{headers:{token:`${accessToken}`}})
+    .then(res=>{
+      setAllProducts(res.data.result)
+    })
+  }
+
 
   useEffect(() => {
-    allProduct();
-     getitem();
-     onSubmit();
+      axios.get(`${process.env.REACT_APP_DEVELOPMENT}/api/stock/getStockInDocNo`,{headers:{token:`${accessToken}`}})
+      .then(res=>{
+        console.log(res)
+        setDocNo(res.data.result)
+        
+      })
      getAllSuppliers()
+     getAllProducts()
   }, []);
   console.log(supplierId)
   return (
@@ -152,15 +133,14 @@ const Stockin = () => {
               <Stack direction="row" spacing={2}>
                 <TextField
                   type={"number"}
-                  value={1}
+                  value={docNo}
                   onChange={(t) => {
-                    handleChange(t);
+                    setDocNo(t.target.value);
                   }}
                   sx={{ width: 200 }}
                   id="outlined-basic"
                   label="Item code "
                   variant="outlined"
-                  {...register("docNo", { required: true, maxLength: 20 })}
                 />
                 <TextField
                   type="number"
@@ -181,7 +161,7 @@ const Stockin = () => {
                   id="combo-box-demo"
                   // value={supplierId}
                   onChange={(event, newValue) => {
-                    setSupplierId(newValue._id);
+                    setSelectedSupplier(newValue);
                   }}
                   getOptionLabel={(supplier) =>supplier.name}
                   options={allSuppliers}
@@ -194,12 +174,11 @@ const Stockin = () => {
 
                 <Autocomplete
                   id="combo-box-demo"
-                  value={productName}
                   onChange={(event, newValue) => {
-                    setProductName(newValue);
+                    setSelectedProduct(newValue);
                   }}
-                  getOptionLabel={(ProductsName) => ProductsName || ""}
-                   options={ProductsNames}
+                  getOptionLabel={(product) => product.name}
+                  options={allProducts}
                   sx={{ width: 200 }}
                   renderInput={(params) => (
                     <TextField {...params} label="Add Products " />
@@ -207,12 +186,11 @@ const Stockin = () => {
 
                 <Autocomplete
                   id="combo-box-demo"
-                  value={productType}
                   onChange={(event, newValue) => {
                     setProductType(newValue);
                   }}
-                  getOptionLabel={(ProductsName) => ProductsName || ""}
-                   options={productTypes}
+                  getOptionLabel={(productType) => productType}
+                   options={selectedProduct?selectedProduct.type:[]}
                   sx={{ width: 200 }}
                   renderInput={(params) => (
                     <TextField {...params} label="Product Type" />
@@ -221,20 +199,16 @@ const Stockin = () => {
               <Stack direction="row" spacing={2} mt="10px">
                 <Autocomplete
                   id="combo-box-demo"
-                  // disablePortal
-                  value={unit}
                   onChange={(event, newValue) => {
                     setUnit(newValue);
                   }}
-                  options={Units}
-                  type="number"
-                  getOptionLabel={(ProductsName) => ProductsName || ""}
+                  options={selectedProduct?selectedProduct.unit:[]}
+                  getOptionLabel={(unit) => unit}
                   sx={{ width: 200 }}
                   renderInput={(params) => (
                     <TextField {...params} label="Product Unit" /> )}/>
 
                 <TextField
-                  {...register("Price")}
                   type="number"
                   name="Price"
                   sx={{ width: 200 }}
@@ -247,20 +221,28 @@ const Stockin = () => {
                   type="number"
                   sx={{ width: 200 }}
                   id="outlined-basic"
-                  label="QUANTITY"
+                  label="Quantity"
                   variant="outlined"
                   {...register("quantity", { required: true, maxLength: 20 })}/>
 
 
-                <TextField
-                  type="number"
-                  sx={{ width: 200 }}
-                  id="outlined-basic"
-                  label="Expiry"
-                  variant="outlined"
-                  {...register("expiry", { required: true, maxLength: 20 })}/>
-                   </Stack>
-
+<section>
+        <LocalizationProvider 
+        
+        dateAdapter={AdapterDateFns} >
+        <DesktopDatePicker
+        label="Start Date"
+        inputFormat="dd/MM/yyyy"
+        // value={selectedDate}
+        onChange={(newValue) => {
+          console.log(newValue)
+          setSelectedDate(newValue)
+        }}
+        renderInput={(params) => <TextField fullWidth {...params} />}
+      />
+      </LocalizationProvider>
+      </section>
+          </Stack>
 
               <div className="mt-3 ali">
                 <center>
