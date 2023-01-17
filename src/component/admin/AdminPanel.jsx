@@ -23,6 +23,7 @@ const AdminPanel = () => {
         {headers:{token:`${accessToken}`}})
         .then(response=>{
         console.log(response, 'res')
+        
       })
       .catch(err =>{
         console.log(err)

@@ -54,7 +54,7 @@ const Stockin = () => {
   const [b, setB] = useState([])
   const [obj, setObj] = useState([])
   const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InNoYXJqZWVsc2siLCJfaWQiOiI2M2JmZmE2OTY2ZWJiYzg0MGQ4ZmZiODkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NzM1MzEyNzd9.9TU3mS2SgZLA8P3Rqop9z83fX0iWsPC1_UBi8HJXAEw"
-
+  const [allSuppliers,setAllSuppliers] = React.useState([])
 
   const {
     register,
@@ -126,12 +126,21 @@ const Stockin = () => {
     setItem(re.data,'post data');
   };     
   console.log(item, "item");
+
+  const getAllSuppliers = ()=>{
+    axios.get(`${process.env.REACT_APP_DEVELOPMENT}/api/supplier/getAllSuppliers`,{headers:{token:`${accessToken}`}})
+    .then(res=>{
+      setAllSuppliers(res.data.result)
+    })
+  }
+
   useEffect(() => {
     allProduct();
      getitem();
      onSubmit();
+     getAllSuppliers()
   }, []);
-  // console.log(array, 'array')
+  console.log(supplierId)
   return (
     <div className="">
        <InventoryNavbar/>
@@ -170,16 +179,16 @@ const Stockin = () => {
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
-                  value={supplierId}
+                  // value={supplierId}
                   onChange={(event, newValue) => {
-                    setSupplierId(newValue);
+                    setSupplierId(newValue._id);
                   }}
-                  getOptionLabel={(ProductsName) => ProductsName || ""}
-                  options={ProductsNames}
+                  getOptionLabel={(supplier) =>supplier.name}
+                  options={allSuppliers}
                   sx={{ width: 200 }}
                   //  {...register("suplier", { required: true, maxLength: 20 })}
                   renderInput={(params) => (
-                    <TextField {...params} label="Supplire" />
+                    <TextField {...params} label="Select Supplier" />
                   )}
                 />
 

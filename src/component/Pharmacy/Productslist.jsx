@@ -1,15 +1,34 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import InventoryNavbar from '../Navbar/InventoryNavbar'
+import { DataGrid } from '@mui/x-data-grid';
+import moment from 'moment'
+import axios from 'axios'
+const Productslist = (props) => {
+  const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InNoYXJqZWVsc2siLCJfaWQiOiI2M2JmZmE2OTY2ZWJiYzg0MGQ4ZmZiODkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NzM1MzEyNzd9.9TU3mS2SgZLA8P3Rqop9z83fX0iWsPC1_UBi8HJXAEw"
+  const [data,setData ] = React.useState([])
+  React.useEffect(()=>{
+    axios.get(`${process.env.REACT_APP_DEVELOPMENT}/api/product/getAllProducts`,{headers:{token:accessToken}})
+    .then(res=>{
+      console.log(res)
+      let arr = res.data.result.map((item,index)=>({...item,id:index+1}))
+      setData(arr)
+    })
+  },[])
 
-
-const Productslist = () => {
   return (
     <div>
         <InventoryNavbar/>
-          <h1 className='text-center my-8 font-bold text-2xl'>Prodcts List</h1>
-      
-<div className="flex flex-col">
+          <h1 className='text-center my-8 font-bold text-2xl'>Products List</h1>
+          <div style={{ height: '70vh', width: '100%' }}>
+                <DataGrid
+                    rows={data}
+                    columns={columns2}
+                    autoPageSize
+                    onRowClick={(item,ev)=>props.history.push('/transactionlist',item.row)}
+                />
+            </div>
+{/* <div className="flex flex-col">
   <div className="overflow-x-auto sm:mx-0.5 lg:mx-0.5">
     <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
       <div className="overflow-hidden">
@@ -71,11 +90,22 @@ const Productslist = () => {
       </div>
     </div>
   </div>
-</div>
+</div> */}
   </div>
   )
 }
+const columns2 = [
+  { field: 'id', headerName: 'ID',width:20},
+  //{ field: 'brand', headerName: 'Brand Name',valueGetter:(param)=>param.value.name,width:150},
+  { field: 'name', headerName: 'Name',valueGetter:(param)=>param.row.name,width:150},
+  { field: 'companyName', headerName: 'companyName',valueGetter:(param)=>param.row.companyName,width:200},
+  { field: 'type', headerName: 'Type',valueGetter:(param)=>param.row.type.map((item)=>item),width:150},
+  { field: 'unit', headerName: 'Unit',valueGetter:(param)=>param.row.unit.map((item)=>item),width:150},
+  {field:"updatedAt",headerName:"Updated At",valueGetter:(param)=>moment.parseZone(param.value).local().format("DD/MM/YY"),width:120},
+  {field:"createdAt",headerName:"Created At",valueGetter:(param)=>moment.parseZone(param.value).local().format("DD/MM/YY"),width:120}
 
+
+];
 export default Productslist
 
 
