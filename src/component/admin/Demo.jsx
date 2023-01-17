@@ -1,46 +1,92 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-const Addgroups = () => {
+
+import AdminNavbar from '../Navbar/AdminNavbar'
+import logo from '../../images/inventory.jpg'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import axios from 'axios'
+import  { useEffect } from 'react'
+
+const Addproducts = () => {
+    const [data, setData] = useState([])
+  
+    const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InNoYXJqZWVsc2siLCJfaWQiOiI2M2JmZmE2OTY2ZWJiYzg0MGQ4ZmZiODkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NzM1MzEyNzd9.9TU3mS2SgZLA8P3Rqop9z83fX0iWsPC1_UBi8HJXAEw"
+    // const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InNoYXJqZWVsc2siLCJfaWQiOiI2M2JlODIxMTc0NGJmMzIzMWQ0Njg4MWQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NzM2Nzk3NDF9.AlhQthpnXqIEJG9JP_buafPXA-MNeBPUo5FIFNKae3o"
+   
+    const { register, handleSubmit } = useForm();
+    const onSubmit = async(data) => {
+        console.log(data)
+        const res= await axios.post('http://localhost:3002/api/product/createProduct', data,
+        {headers:{token:`${accessToken}`}})
+        .then(response=>{
+        console.log(response, 'res')
+      })
+  
+       
+      
+  }
+
+  useEffect(() => {
+    if( data == !undefined){
+      onSubmit()
+    }
+    }, [])
+  
   return (
     <div>
-    
-<div className='flex items-center justify-center mt-4'>
-  <Link to='/adminpanel'>  <button className="flex px-3 py-2 bg-blue-400 mr-1 text-white font-semibold rounded">
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-        <span className="ml-1">Add user</span>
-    </button></Link>
+          <AdminNavbar/>
+    {/* <div className='mt-8'> */}
+    <div>
+      
+  <section className="bg-gray-50 ">
+  <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+  <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-900 ">
+  <img className="w-56 h-32 mr-6 mt-6" src={logo} alt="logo"/>
+         
+      </a>
+      <div className="w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 bg-gray-10 dark:border-gray-600">
+          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+              <h1 className="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+                 Add Products 
+              </h1>
+          
+              <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(onSubmit)}>
+                  <div>
+                      <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Enter Product Name</label>
+                      <input {...register("name", { required: true })}  type="text"  id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-800 dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter Product Name"  required=""  />
+                  </div>
+                  <div>
+                      <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Enter Company Name</label>
+                      <input {...register("companyName", { required: true })}  type="text"    id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-800 dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter Company Name" required=""/>
+                  </div>
+                  <div>
+                      <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Enter Products Type</label>
+                      <input   {...register("type", { required: true })} type="text"   id="type" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-800 dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter Products Name" required=""/>
+                  </div>
+                  
+        
+                  <div>
+                      <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-900">Unit</label>
+                      <input {...register("unit", { required: true })} type="text"    id="password" placeholder="Enter Unit Number" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-800 dark:focus:ring-blue-500 dark:focus:border-blue-500" required=""/>
+                  </div>
+                  <div className="flex items-center justify-between">
+                      <div className="flex items-start">
+                       
+                         
+                      </div>
 
-   <Link to="/addproducts"> <button className="flex px-3 py-2 bg-red-400 mr-1 text-white font-semibold rounded">
-   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-  <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-</svg>
+                  </div>
+                    <button type="submit" className="w-full text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" >Add Products</button>
+                    
+                     
 
-        <span className="ml-1">Add Products</span>
-    </button></Link>
-
-
-
-    <Link to ="/Addsuppliers">    <button className="flex px-3 py-2 bg-orange-400 text-white font-semibold rounded">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg> 
-
-        <span className="ml-1 ">Add supplier</span>
-    </button></Link>
-    <Link to="/Addloactaion">    <button className="flex px-3 mx-2 py-2 bg-red-400 text-white font-semibold rounded">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-  </svg>
-
-        <span className="ml-1">Add Location</span>
-    </button> </Link>
-    
-</div>
+              </form>
+          </div>
+      </div>
+  </div>
+</section>
+    </div>
     </div>
   )
 }
-
-export default Addgroups
+export default Addproducts

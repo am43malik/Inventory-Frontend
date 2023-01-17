@@ -3,9 +3,18 @@ import { Link } from 'react-router-dom'
 import InventoryNavbar from '../Navbar/InventoryNavbar'
 
 const Stockoutsearch = () => {
+
+	const getDocDetails = async()=>{
+		try {
+			
+		} catch (error) {
+			console.log('Error in Get Doc Details',);
+			
+		}
+	}
   return (
     <div>
-  <InventoryNavbar/>
+  <InventoryNavbar/> 
               <h1 className='text-center my-8 font-bold text-2xl'>Stock-out Search</h1>
 
 <div className="flex justify-center">

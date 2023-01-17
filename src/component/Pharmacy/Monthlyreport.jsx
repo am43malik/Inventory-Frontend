@@ -1,161 +1,164 @@
 import React from 'react'
 import MaterialTable from 'material-table'
 import { ThemeProvider,createTheme, Stack, TextField, Autocomplete  } from '@mui/material';
+
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import InventoryNavbar from '../Navbar/InventoryNavbar';
+import axios from 'axios';
+import { useEffect } from 'react';
+import { useForm } from "react-hook-form";
+var LocationNames = [];
+var trainerNames = [];
+var test =[]
 const Monthlyreport = () => {
   const { useState } = React;
-  const top100Films = [
-    { label: 'The Shawshank Redemption', year: 1994 },
-    { label: 'The Godfather', year: 1972 },
-    { label: 'The Godfather: Part II', year: 1974 },
-    { label: 'The Dark Knight', year: 2008 },
-    { label: '12 Angry Men', year: 1957 },
-    { label: "Schindler's List", year: 1993 },
-    { label: 'Pulp Fiction', year: 1994 },
-    {
-      label: 'The Lord of the Rings: The Return of the King',
-      year: 2003,
-    },
-    { label: 'The Good, the Bad and the Ugly', year: 1966 },
-    { label: 'Fight Club', year: 1999 },
-    {
-      label: 'The Lord of the Rings: The Fellowship of the Ring',
-      year: 2001,
-    },
-    {
-      label: 'Star Wars: Episode V - The Empire Strikes Back',
-      year: 1980,
-    },
-    { label: 'Forrest Gump', year: 1994 },
-    { label: 'Inception', year: 2010 },
-    {
-      label: 'The Lord of the Rings: The Two Towers',
-      year: 2002,
-    },
-    { label: "One Flew Over the Cuckoo's Nest", year: 1975 },
-    { label: 'Goodfellas', year: 1990 },
-    { label: 'The Matrix', year: 1999 },
-    { label: 'Seven Samurai', year: 1954 },
-    {
-      label: 'Star Wars: Episode IV - A New Hope',
-      year: 1977,
-    },
-    { label: 'City of God', year: 2002 },
-    { label: 'Se7en', year: 1995 },
-    { label: 'The Silence of the Lambs', year: 1991 },
-    { label: "It's a Wonderful Life", year: 1946 },
-    { label: 'Life Is Beautiful', year: 1997 },
-    { label: 'The Usual Suspects', year: 1995 },
-    { label: 'Léon: The Professional', year: 1994 },
-    { label: 'Spirited Away', year: 2001 },
-    { label: 'Saving Private Ryan', year: 1998 },
-    { label: 'Once Upon a Time in the West', year: 1968 },
-    { label: 'American History X', year: 1998 },
-    { label: 'Interstellar', year: 2014 },
-    { label: 'Casablanca', year: 1942 },
-    { label: 'City Lights', year: 1931 },
-    { label: 'Psycho', year: 1960 },
-    { label: 'The Green Mile', year: 1999 },
-    { label: 'The Intouchables', year: 2011 },
-    { label: 'Modern Times', year: 1936 },
-    { label: 'Raiders of the Lost Ark', year: 1981 },
-    { label: 'Rear Window', year: 1954 },
-    { label: 'The Pianist', year: 2002 },
-    { label: 'The Departed', year: 2006 },
-    { label: 'Terminator 2: Judgment Day', year: 1991 },
-    { label: 'Back to the Future', year: 1985 },
-    { label: 'Whiplash', year: 2014 },
-    { label: 'Gladiator', year: 2000 },
-    { label: 'Memento', year: 2000 },
-    { label: 'The Prestige', year: 2006 },
-    { label: 'The Lion King', year: 1994 },
-    { label: 'Apocalypse Now', year: 1979 },
-    { label: 'Alien', year: 1979 },
-    { label: 'Sunset Boulevard', year: 1950 },
-    {
-      label: 'Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb',
-      year: 1964,
-    },
-    { label: 'The Great Dictator', year: 1940 },
-    { label: 'Cinema Paradiso', year: 1988 },
-    { label: 'The Lives of Others', year: 2006 },
-    { label: 'Grave of the Fireflies', year: 1988 },
-    { label: 'Paths of Glory', year: 1957 },
-    { label: 'Django Unchained', year: 2012 },
-    { label: 'The Shining', year: 1980 },
-    { label: 'WALL·E', year: 2008 },
-    { label: 'American Beauty', year: 1999 },
-    { label: 'The Dark Knight Rises', year: 2012 },
-    { label: 'Princess Mononoke', year: 1997 },
-    { label: 'Aliens', year: 1986 },
-    { label: 'Oldboy', year: 2003 },
-    { label: 'Once Upon a Time in America', year: 1984 },
-    { label: 'Witness for the Prosecution', year: 1957 },
-    { label: 'Das Boot', year: 1981 },
-    { label: 'Citizen Kane', year: 1941 },
-    { label: 'North by Northwest', year: 1959 },
-    { label: 'Vertigo', year: 1958 },
-    {
-      label: 'Star Wars: Episode VI - Return of the Jedi',
-      year: 1983,
-    },
-    { label: 'Reservoir Dogs', year: 1992 },
-    { label: 'Braveheart', year: 1995 },
-    { label: 'M', year: 1931 },
-    { label: 'Requiem for a Dream', year: 2000 },
-    { label: 'Amélie', year: 2001 },
-    { label: 'A Clockwork Orange', year: 1971 },
-    { label: 'Like Stars on Earth', year: 2007 },
-    { label: 'Taxi Driver', year: 1976 },
-    { label: 'Lawrence of Arabia', year: 1962 },
-    { label: 'Double Indemnity', year: 1944 },
-    {
-      label: 'Eternal Sunshine of the Spotless Mind',
-      year: 2004,
-    },
-    { label: 'Amadeus', year: 1984 },
-    { label: 'To Kill a Mockingbird', year: 1962 },
-    { label: 'Toy Story 3', year: 2010 },
-    { label: 'Logan', year: 2017 },
-    { label: 'Full Metal Jacket', year: 1987 },
-    { label: 'Dangal', year: 2016 },
-    { label: 'The Sting', year: 1973 },
-    { label: '2001: A Space Odyssey', year: 1968 },
-    { label: "Singin' in the Rain", year: 1952 },
-    { label: 'Toy Story', year: 1995 },
-    { label: 'Bicycle Thieves', year: 1948 },
-    { label: 'The Kid', year: 1921 },
-    { label: 'Inglourious Basterds', year: 2009 },
-    { label: 'Snatch', year: 2000 },
-    { label: '3 Idiots', year: 2009 },
-    { label: 'Monty Python and the Holy Grail', year: 1975 },
-  ];
+ 
   const [columns, setColumns] = useState([
     { title: 'Sno', field: 'sno' },
-    { title: 'Date', field: 'name' },
-    { title: 'Products Name/unit', field: 'name' },
-    { title: 'company Name', field: 'name' },
+    { title: 'Date', field: 'Date' },
+    { title: 'Products Name/unit', field: 'productName' },
+    { title: 'company Name', field: 'companyName' },
     { title: 'Qauntity', field: 'surname', initialEditValue: 'initial edit value' },
     { title: 'Price', field: 'birthYear', type: 'numeric' },
     {title: 'total',field: 'birthCity',lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' },},
   ]);
 
-  const [data, setData] = useState([
-    { name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 },
-    { name: 'Zerya Betül', surname: 'Baran', birthYear: 2017, birthCity: 34 },
-  ]);
+  const [data, setData] = useState([]);
   const defaultMaterialTheme = createTheme();
+  const [value, setValue] = React.useState();
+  const [value1, setValue1] = React.useState();
+  console.log(value);
+  console.log(value1);
+  const [b, setB] = useState([])
+  const [LocationName, setLocationName] = useState([]);
+  const [LocationId, setLocationId] = useState();
+  const [trainerName, setTrainerName] = useState();
+  
+
+  const [array, setArray] = useState([])
+  const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InNoYXJqZWVsc2siLCJfaWQiOiI2M2JmZmE2OTY2ZWJiYzg0MGQ4ZmZiODkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NzM1MzEyNzd9.9TU3mS2SgZLA8P3Rqop9z83fX0iWsPC1_UBi8HJXAEw"
+
+  
+  const allLocation = async()=>{
+    try {
+     const res = await axios.get("http://localhost:3002/api/location/getAllLocations",{headers:{token:`${accessToken}`}}) 
+   
+   .then(res=>{
+    setLocationName(res.data)
+    if(res.data !== undefined)
+    res.data.result.map((item)=>{
+     LocationNames.push(item.name)
+     trainerNames.push(item.trainerName)
+    })
+   })
+   
+    } catch (error) {
+      console.log('Error in Get Locaion',error);
+    }}
+
+
+
+
+
+
+
+// Here  i am start Montly data tabel 
+const {
+  register,
+  handleSubmit,
+  control,
+  formState: { errors },
+} = useForm();
+ 
+const onSubmit = (stock) => {
+
+  var obj = {
+          value,
+          value1,
+    ...stock
+
+  }
+ 
+  array.push(obj)
+  console.log(obj, 'obj')
+
+
+};
+
+const handelclick = () => {
+   
+  b.push(array)
+  setB(b)
+
+
+console.log(b, 'b')
+// console.log(stock,'stock')
+} 
+    const MonthlyReportData = async()=>{
+      try {
+        
+        const res = await axios.get("http://localhost:3002/api/stock/getMonthlyReport",{headers:{token:`${accessToken}`}})
+          setData(res)
+        console.log(data.data,"DAta")
+      } catch (error) {
+        console.log(error);
+        
+      }
+    }
+
+
+    useEffect(()=>{
+        allLocation();
+    },[])
+  
+
   return (
-   <>
-     <InventoryNavbar/>
+  <>
+      <InventoryNavbar/>
+      <form onSubmit={handleSubmit(onSubmit)}>
     <div className='mx-6'>
        <Stack direction="row" spacing={2} margin="23px" justifyContent="center">
-     <TextField type="Date" sx={{width:200}} id="outlined-basic" label="" variant="outlined"  />
-     <TextField type="Date" sx={{width:200}} id="outlined-basic" label="" variant="outlined"  />
+     {/* <TextField type="Date" sx={{width:200}} id="outlined-basic" label="" variant="outlined"  /> */}
+     {/* <TextField type="Date"  format="yyyy-MM-dd HH:mm:ss" sx={{width:200}} id="outlined-basic" label="" variant="outlined"  /> */}
+     <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DatePicker
+        label="From"
+        value={value1}
+        onChange={(newValue) => {
+          setValue1(newValue);
+        }}
+        renderInput={(params) => <TextField {...params} />}
+        
+      // inputFormat="YYYY-MM-DD" views={["day", "month", "year"]}
+      format="yyyy-MM-dd"
+      />
+    </LocalizationProvider>
+     <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DatePicker
+       
+        label="To"
+        value={value}
+        onChange={(newValue) => {
+          setValue(newValue);
+        }}
+        renderInput={(params) => <TextField {...params} />}
+        
+        // inputFormat="YYYY-MM-DD" views={["day", "month", "year"]}
+        format="yyyy-MM-dd"
+
+      />
+    </LocalizationProvider>
      <Autocomplete
           disablePortal
           id="combo-box-demo"
-          options={top100Films}
+          value={LocationId}
+          onChange={(event,newValue)=>{
+            setLocationId(newValue)
+          }}
+          getOptionLabel={(LocationName) => LocationName || ""}
+          options={LocationNames}
           sx={{ width: 200 }}
           renderInput={(params) => <TextField {...params} label="Select Location" />}
           
@@ -163,42 +166,77 @@ const Monthlyreport = () => {
      <Autocomplete
           disablePortal
           id="combo-box-demo"
-          options={top100Films}
+          value={trainerName}
+          onChange={(event,newValue)=>{
+            setTrainerName(newValue)
+          }}
+          getOptionLabel={(LocationName) => LocationName || ""}
+          options={trainerNames}
           sx={{ width: 200 }}
-          renderInput={(params) => <TextField {...params} label="Select Trainer" />}
+          renderInput={(params) => <TextField {...params} label="Select Traniner" />}
           
         />
+    
 
       
       </Stack>
-  <center> <button type="submit" className=" text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative my-2">Submit </button></center> 
+  <center> <button type="button" className=" text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative my-2" onClick={()=>MonthlyReportData()}>Submit </button></center> 
       <ThemeProvider theme={defaultMaterialTheme}>
-       <MaterialTable
-      title="Monthly Report"
-      columns={columns}
+      <MaterialTable
       data={data}
-      editable={{
-        onBulkUpdate: changes =>
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              resolve();
-            }, 1000);
-          }),     
+      columns={columns}
+    editable={{
+        isEditable: rowData => rowData.date === data.date, // only name(a) rows would be editable
+        isEditable: rowData => rowData.ProductsName === data.ProductsName,
+        isEditable: rowData => rowData.companyName === data.companyName, // only name(b) rows would be deletable,
+        isEditable: rowData => rowData.Qauntity === data.Qauntity,
+        isEditable: rowData => rowData.Price === data.Price,
+        isEditable: rowData => rowData.total === data.total,
+
+     
+        onRowAddCancelled: rowData => console.log('Row adding cancelled'),
+        onRowUpdateCancelled: rowData => console.log('Row editing cancelled'),
+        onRowAdd: newData =>
+            new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    /* setData([...data, newData]); */
+
+                    resolve();
+                }, 1000);
+            }),
+        onRowUpdate: (newData, oldData) =>
+            new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    const dataUpdate = [...data];
+                    const index = oldData.tableData.id;
+                    dataUpdate[index] = newData;
+                    setData([...dataUpdate]);
+
+                    resolve();
+                }, 1000);
+            }),
         onRowDelete: oldData =>
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              resolve();
-            }, 1000);
-          }),     
-      }}
-    />
+            new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    const dataDelete = [...data];
+                    const index = oldData.tableData.id;
+                    dataDelete.splice(index, 1);
+                    setData([...dataDelete]);
+
+                    resolve();
+                }, 1000);
+            })
+    }}
+/>
+{/* {console.log(rowData.date,'date')} */}
     </ThemeProvider>
   <center> <button type="submit" className=" text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative my-2">Print </button></center> 
   <center> <button type="submit" className=" text-white bg-red-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative my-2">Grand Total = </button></center> 
 
     </div>
+    </form>
     </>
   )
 }
 
-export default Monthlyreport
+export default Monthlyreport

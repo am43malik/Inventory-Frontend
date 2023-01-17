@@ -1,231 +1,349 @@
-import { Autocomplete, Button, Container, Stack, TextField } from '@mui/material'
-import React from 'react'
-import { DataGrid } from '@mui/x-data-grid';
-import InventoryNavbar from '../Navbar/InventoryNavbar';
-const top100Films = [
-    { label: 'The Shawshank Redemption', year: 1994 },
-    { label: 'The Godfather', year: 1972 },
-    { label: 'The Godfather: Part II', year: 1974 },
-    { label: 'The Dark Knight', year: 2008 },
-    { label: '12 Angry Men', year: 1957 },
-    { label: "Schindler's List", year: 1993 },
-    { label: 'Pulp Fiction', year: 1994 },
-    {
-      label: 'The Lord of the Rings: The Return of the King',
-      year: 2003,
-    },
-    { label: 'The Good, the Bad and the Ugly', year: 1966 },
-    { label: 'Fight Club', year: 1999 },
-    {
-      label: 'The Lord of the Rings: The Fellowship of the Ring',
-      year: 2001,
-    },
-    {
-      label: 'Star Wars: Episode V - The Empire Strikes Back',
-      year: 1980,
-    },
-    { label: 'Forrest Gump', year: 1994 },
-    { label: 'Inception', year: 2010 },
-    {
-      label: 'The Lord of the Rings: The Two Towers',
-      year: 2002,
-    },
-    { label: "One Flew Over the Cuckoo's Nest", year: 1975 },
-    { label: 'Goodfellas', year: 1990 },
-    { label: 'The Matrix', year: 1999 },
-    { label: 'Seven Samurai', year: 1954 },
-    {
-      label: 'Star Wars: Episode IV - A New Hope',
-      year: 1977,
-    },
-    { label: 'City of God', year: 2002 },
-    { label: 'Se7en', year: 1995 },
-    { label: 'The Silence of the Lambs', year: 1991 },
-    { label: "It's a Wonderful Life", year: 1946 },
-    { label: 'Life Is Beautiful', year: 1997 },
-    { label: 'The Usual Suspects', year: 1995 },
-    { label: 'Léon: The Professional', year: 1994 },
-    { label: 'Spirited Away', year: 2001 },
-    { label: 'Saving Private Ryan', year: 1998 },
-    { label: 'Once Upon a Time in the West', year: 1968 },
-    { label: 'American History X', year: 1998 },
-    { label: 'Interstellar', year: 2014 },
-    { label: 'Casablanca', year: 1942 },
-    { label: 'City Lights', year: 1931 },
-    { label: 'Psycho', year: 1960 },
-    { label: 'The Green Mile', year: 1999 },
-    { label: 'The Intouchables', year: 2011 },
-    { label: 'Modern Times', year: 1936 },
-    { label: 'Raiders of the Lost Ark', year: 1981 },
-    { label: 'Rear Window', year: 1954 },
-    { label: 'The Pianist', year: 2002 },
-    { label: 'The Departed', year: 2006 },
-    { label: 'Terminator 2: Judgment Day', year: 1991 },
-    { label: 'Back to the Future', year: 1985 },
-    { label: 'Whiplash', year: 2014 },
-    { label: 'Gladiator', year: 2000 },
-    { label: 'Memento', year: 2000 },
-    { label: 'The Prestige', year: 2006 },
-    { label: 'The Lion King', year: 1994 },
-    { label: 'Apocalypse Now', year: 1979 },
-    { label: 'Alien', year: 1979 },
-    { label: 'Sunset Boulevard', year: 1950 },
-    {
-      label: 'Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb',
-      year: 1964,
-    },
-    { label: 'The Great Dictator', year: 1940 },
-    { label: 'Cinema Paradiso', year: 1988 },
-    { label: 'The Lives of Others', year: 2006 },
-    { label: 'Grave of the Fireflies', year: 1988 },
-    { label: 'Paths of Glory', year: 1957 },
-    { label: 'Django Unchained', year: 2012 },
-    { label: 'The Shining', year: 1980 },
-    { label: 'WALL·E', year: 2008 },
-    { label: 'American Beauty', year: 1999 },
-    { label: 'The Dark Knight Rises', year: 2012 },
-    { label: 'Princess Mononoke', year: 1997 },
-    { label: 'Aliens', year: 1986 },
-    { label: 'Oldboy', year: 2003 },
-    { label: 'Once Upon a Time in America', year: 1984 },
-    { label: 'Witness for the Prosecution', year: 1957 },
-    { label: 'Das Boot', year: 1981 },
-    { label: 'Citizen Kane', year: 1941 },
-    { label: 'North by Northwest', year: 1959 },
-    { label: 'Vertigo', year: 1958 },
-    {
-      label: 'Star Wars: Episode VI - Return of the Jedi',
-      year: 1983,
-    },
-    { label: 'Reservoir Dogs', year: 1992 },
-    { label: 'Braveheart', year: 1995 },
-    { label: 'M', year: 1931 },
-    { label: 'Requiem for a Dream', year: 2000 },
-    { label: 'Amélie', year: 2001 },
-    { label: 'A Clockwork Orange', year: 1971 },
-    { label: 'Like Stars on Earth', year: 2007 },
-    { label: 'Taxi Driver', year: 1976 },
-    { label: 'Lawrence of Arabia', year: 1962 },
-    { label: 'Double Indemnity', year: 1944 },
-    {
-      label: 'Eternal Sunshine of the Spotless Mind',
-      year: 2004,
-    },
-    { label: 'Amadeus', year: 1984 },
-    { label: 'To Kill a Mockingbird', year: 1962 },
-    { label: 'Toy Story 3', year: 2010 },
-    { label: 'Logan', year: 2017 },
-    { label: 'Full Metal Jacket', year: 1987 },
-    { label: 'Dangal', year: 2016 },
-    { label: 'The Sting', year: 1973 },
-    { label: '2001: A Space Odyssey', year: 1968 },
-    { label: "Singin' in the Rain", year: 1952 },
-    { label: 'Toy Story', year: 1995 },
-    { label: 'Bicycle Thieves', year: 1948 },
-    { label: 'The Kid', year: 1921 },
-    { label: 'Inglourious Basterds', year: 2009 },
-    { label: 'Snatch', year: 2000 },
-    { label: '3 Idiots', year: 2009 },
-    { label: 'Monty Python and the Holy Grail', year: 1975 },
-  ];
-  
+import {
+  Autocomplete,
+  Button,
+  Container,
+  Stack,
+  TextField,
+} from "@mui/material";
+import React, { useState } from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import { useEffect } from "react";
+import axios from "axios";
+import { useForm } from "react-hook-form";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+
+
+
+
+// import { useGetProductsQuery, useUpdatePostMutation } from "../../services/stockin";
+import MaterialTable from "material-table";
+import InventoryNavbar from "../Navbar/InventoryNavbar";
 const columns = [
-    { field: 'id', headerName: 'SNO', width: 70 },
+  { field: "id", headerName: "SrNO", width: 100 },
+  { field: "itemcode", headerName: " Itemcode", width: 130 },
+  { field: "suplierNo", headerName: " SuplierNo", width: 130 },
+  { field: "suplier", headerName: " Suplier", width: 130 },
+  { field: "addproduct", headerName: " Addproduct", width: 130 },
+  { field: "typeproduct", headerName: " Product Type", width: 130 },
+  { field: "productunit", headerName: " Product Unit", width: 130 },
+  { field: "Price", headerName: " Price", width: 130 },
+  { field: "quantity", headerName: " Quantity", width: 130 },
+  { field: "expriy", headerName: " Expriy", width: 130 },];
+//  var array=[]
+// var b=[]
+var ProductsNames = [];
+var productTypes = [];
+var Units = [];
 
-    { field: 'productsname', headerName: 'Products name/unit', width: 150 },
-    {field: 'Quantity',headerName: 'Quantity',type: 'number',width: 90,},
-    { field: 'productstype', headerName: 'Products type', width: 130 },
-    {field: 'unit',headerName: 'unitPrice',type: 'number',width: 90,},
-    {field: 'total',headerName: 'total',type: 'number',width: 90,},
-    {field: 'Expiry',headerName: 'Expiry',type: 'number',width: 90,},
-  ];
-  const rows = [
-    { id: 1, productstype: 'Durg', productsname: 'Medicine1', unit: 1.4 },
-    { id: 2, productstype: 'injection', productsname: 'Medicine2', unit: 1.5 },
-    { id: 3, productstype: 'injection', productsname: 'Medicine3', unit: 3.5 },
-    { id: 4, productstype: 'injection', productsname: 'Medicine4', unit: 2.5 },
-    { id: 5, productstype: 'Durg', productsname: 'Medicine5', unit: 5.5 },
-    { id: 6, productstype: 'Durg', productsname: 'Medicine1', unit: 1.4 },
-    { id: 7, productstype: 'injection', productsname: 'Medicine2', unit: 1.5 },
-    { id: 8, productstype: 'injection', productsname: 'Medicine3', unit: 3.5 },
-    { id: 9, productstype: 'injection', productsname: 'Medicine4', unit: 2.5 },
-    { id: 10, productstype: 'Durg', productsname: 'Medicine5', unit: 5.5 },
-    { id: 11, productstype: 'Durg', productsname: 'Medicine1', unit: 1.4 },
-    { id: 12, productstype: 'injection', productsname: 'Medicine2', unit: 1.5 },
-    { id: 13, productstype: 'injection', productsname: 'Medicine3', unit: 3.5 },
-    { id: 14, productstype: 'injection', productsname: 'Medicine4', unit: 2.5 },
-    { id: 15, productstype: 'Durg', productsname: 'Medicine5', unit: 5.5 },
-  
-  ];
 const Stockin = () => {
-    return (
-        <div className=''>
-            <InventoryNavbar/>
-              <h1 className='text-center my-8 font-bold text-2xl'>Stock In</h1>
-            <Container>
-            <Stack direction="row" spacing={2} justifyContent='center'>
-        <TextField type="number" sx={{width:200}} id="outlined-basic" label="Doc No" variant="outlined"  />
-        <TextField type="number" sx={{width:200}} id="outlined-basic" label="Supplier Doc No" variant="outlined"  />
+  const [products, setProducts] = useState([]);
+  const [item, setItem] = useState([]);
+  const [supplierId, setSupplierId] = useState();
+  const [productName, setProductName] = useState();
+  const [productType, setProductType] = useState();
+  const [unit, setUnit] = useState();
+  const [array, setArray] = useState([])
+  const [b, setB] = useState([])
+  const [obj, setObj] = useState([])
+  const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InNoYXJqZWVsc2siLCJfaWQiOiI2M2JmZmE2OTY2ZWJiYzg0MGQ4ZmZiODkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NzM1MzEyNzd9.9TU3mS2SgZLA8P3Rqop9z83fX0iWsPC1_UBi8HJXAEw"
 
-            <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={top100Films}
-          sx={{ width: 200 }}
-          renderInput={(params) => <TextField {...params} label="Supplire" />}
-        />
-            <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={top100Films}
-          sx={{ width: 200 }}
-          renderInput={(params) => <TextField  {...params} label="Add Products " />}
-        />
-          
-       
-    
-        </Stack>
-        <Stack direction="row" spacing={2} justifyContent='center' marginTop="5px">
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm();
+
+  const handleChange = (event) => {
+    if (event.target.value >= 0) {
+    }
+
+  };
+
+  const onSubmit = (stock) => {
+
+    var obj = {
+      supplierId,
+      productName,
+      productType,
+      unit,
+      ...stock
+
+    }
    
-        <TextField type="number" sx={{width:200}} id="outlined-basic" label="Quantity"   variant="outlined"  />
-        <TextField type="number" sx={{width:200}} id="outlined-basic" label="Price" variant="outlined"  />
-        <TextField type="number" sx={{width:200}} id="outlined-basic" label="Expiry" variant="outlined"  />
+    array.push(obj)
+    console.log(obj, 'obj')
 
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={top100Films}
-          sx={{ width: 200 }}
-          renderInput={(params) => <TextField {...params} label="Product Type" />}
-        />
+
+  };
+  const handelclick = () => {
+   
+      b.push(array)
+      setB(b)
     
+   
+    console.log(b, 'b')
+    // console.log(stock,'stock')
+  }
+
+
+  const allProduct = async () => {
+    const res =  await axios.get("http://localhost:3002/api/product/getAllProducts",{headers:{token:`${accessToken}`}})
+    .then(res=>{
+      setProducts(res.data);
+      console.log(products,'products')
+    console.log(res.data,'res.data')
+    if (res.data !== undefined) {
+      res.data.result.map((item) => {
+        ProductsNames.push(item.name);
+        console.log(item.name,'itemkkhfhhfhfdhfdhfhfhfgd')
+        productTypes.push(item.type);
+        Units.push(item.unit);
+      });
+   }
+    })
+
     
-        </Stack>
-        <div className='mt-3 ali'>
-    
-      <center>  <Button variant="contained" alignitems="center">Add</Button></center> 
-        </div>
-    
+
+
+   
+
+
+  };
+
+  const getitem = async () => {
+    const re = await axios.post("http://localhost:3002/api/stock/stockIn",array,{headers:{token:`${accessToken}`}});
+     console.log(re.data, "reData");
+    setItem(re.data,'post data');
+  };     
+  console.log(item, "item");
+  useEffect(() => {
+    allProduct();
+     getitem();
+     onSubmit();
+  }, []);
+  // console.log(array, 'array')
+  return (
+    <div className="">
+       <InventoryNavbar/>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div>
+          <div>
+            <h1 className="text-center my-8 font-bold text-2xl">Stock In</h1>
+            <Container>
+              <Stack direction="row" spacing={2}>
+                <TextField
+                  type={"number"}
+                  value={1}
+                  onChange={(t) => {
+                    handleChange(t);
+                  }}
+                  sx={{ width: 200 }}
+                  id="outlined-basic"
+                  label="Item code "
+                  variant="outlined"
+                  {...register("docNo", { required: true, maxLength: 20 })}
+                />
+                <TextField
+                  type="number"
+                  //  value={value}
+                  // disablePortal
+                  sx={{ width: 200 }}
+                  id="outlined-basic"
+                  label="Supplier Doc No"
+                  variant="outlined"
+                  {...register("supplierDocNo", {
+                    required: true,
+                    maxLength: 20,
+                  })}
+                />
+
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  value={supplierId}
+                  onChange={(event, newValue) => {
+                    setSupplierId(newValue);
+                  }}
+                  getOptionLabel={(ProductsName) => ProductsName || ""}
+                  options={ProductsNames}
+                  sx={{ width: 200 }}
+                  //  {...register("suplier", { required: true, maxLength: 20 })}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Supplire" />
+                  )}
+                />
+
+                <Autocomplete
+                  id="combo-box-demo"
+                  value={productName}
+                  onChange={(event, newValue) => {
+                    setProductName(newValue);
+                  }}
+                  getOptionLabel={(ProductsName) => ProductsName || ""}
+                   options={ProductsNames}
+                  sx={{ width: 200 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Add Products " />
+                  )} />
+
+                <Autocomplete
+                  id="combo-box-demo"
+                  value={productType}
+                  onChange={(event, newValue) => {
+                    setProductType(newValue);
+                  }}
+                  getOptionLabel={(ProductsName) => ProductsName || ""}
+                   options={productTypes}
+                  sx={{ width: 200 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Product Type" />
+                  )} /> </Stack>
+
+              <Stack direction="row" spacing={2} mt="10px">
+                <Autocomplete
+                  id="combo-box-demo"
+                  // disablePortal
+                  value={unit}
+                  onChange={(event, newValue) => {
+                    setUnit(newValue);
+                  }}
+                  options={Units}
+                  type="number"
+                  getOptionLabel={(ProductsName) => ProductsName || ""}
+                  sx={{ width: 200 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Product Unit" /> )}/>
+
+                <TextField
+                  {...register("Price")}
+                  type="number"
+                  name="Price"
+                  sx={{ width: 200 }}
+                  id="outlined-basic"
+                  label="Price"
+                  variant="outlined"
+                  {...register("price", { required: true, maxLength: 20 })}/>
+
+                <TextField
+                  type="number"
+                  sx={{ width: 200 }}
+                  id="outlined-basic"
+                  label="QUANTITY"
+                  variant="outlined"
+                  {...register("quantity", { required: true, maxLength: 20 })}/>
+
+
+                <TextField
+                  type="number"
+                  sx={{ width: 200 }}
+                  id="outlined-basic"
+                  label="Expiry"
+                  variant="outlined"
+                  {...register("expiry", { required: true, maxLength: 20 })}/>
+                   </Stack>
+
+
+              <div className="mt-3 ali">
+                <center>
+                  <Button type="submit" variant="contained" alignitems="center"> Add </Button>
+                </center>
+              </div>
             </Container>
-    <div className='mx-3'>
-           
-     <div style={{ height: 800, width: '100%', marginTop:'10px', padding:'5px'}}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={10}
-            rowsPerPageOptions={[10]}
-            // checkboxSelection
-          />
+          </div>
+
         </div>
-    
+
+        <div className="mx-3">
+          <div
+            style={{
+              height: 800,
+              width: "100%",
+              marginTop: "10px",
+              padding: "5px",
+            }}
+          >
+
+
+
+            <div >
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 300 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                     
+
+                      <TableCell align="right">Id</TableCell>
+                      <TableCell align="right">SuplierNo</TableCell>
+                      <TableCell align="right">Suplier</TableCell>
+                      <TableCell align="right">Addproduct</TableCell>
+                      <TableCell align="right">Product Type</TableCell>
+                      <TableCell align="right">Product Unit</TableCell>
+                      <TableCell align="right">Price</TableCell>
+                      <TableCell align="right"> Quantity</TableCell>
+                      <TableCell align="right"> Expriy</TableCell>
+                      <TableCell align="right"> Total</TableCell>
+                      <TableCell align="right"> Delete</TableCell>
+
+
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {b[0]?.map((row, id) => (
+                      <TableRow key={id}>
+                        <TableCell align="right">{id + 1}</TableCell>
+                        <TableCell align="right">{row.docNo}</TableCell>
+                        <TableCell align="right">{row.supplierId}</TableCell>
+                        <TableCell align="right">{row.productName}</TableCell>
+                        <TableCell align="right">{row.productType}</TableCell>
+                        <TableCell align="right">{row.unit}</TableCell>
+                        <TableCell align="right">{row.price}</TableCell>
+                        <TableCell align="right">{row.quantity}</TableCell>
+                        <TableCell align="right">{row.expiry}</TableCell>
+                        <TableCell align="right">{row.quantity * row.Price}</TableCell>
+
+
+
+                        <TableCell align="right">
+                          <button align="right" onClick={()=>{
+           setArray(array.filter((i)=> row.suplierNo !== i.suplierNo))
+          
+              }}>
+          
+             <DeleteIcon/>
+              </button>
+             
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+
+
+
+            {console.log(b, 'kkkkk')}
+
+          </div>
         </div>
-        <div className='flex justify-center'> 
-      <center> <button type="submit" className=" text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative mx-2 ">Print </button></center> 
-      <center> <button type="submit" className=" text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative ">Save </button></center> 
-      <center> <button type="submit" className=" text-white bg-red-500 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative mx-3">Grand Total = </button></center> 
-      </div>
+        <div className='flex justify-center'>
+          <center> <button type="submit" className=" text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative mx-2 ">Print </button></center>
+          <center> <button type="submit" className=" text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative ">Save </button></center>
+          <center> <button type="submit" className=" text-white bg-red-500 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative mx-3">Grand Total = </button></center>
         </div>
-      )
-}
-export default Stockin
+
+      </form>
+    </div>
+  );
+};
+export default Stockin;
