@@ -1,9 +1,11 @@
 import React from 'react'
 import MaterialTable from 'material-table'
 import { ThemeProvider,createTheme, Stack, TextField, Autocomplete  } from '@mui/material';
-
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import date from 'date-and-time';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import InventoryNavbar from '../Navbar/InventoryNavbar';
 import axios from 'axios';
@@ -32,37 +34,22 @@ const Monthlyreport = () => {
   console.log(value);
   console.log(value1);
   const [b, setB] = useState([])
-  const [LocationName, setLocationName] = useState([]);
-  const [LocationId, setLocationId] = useState();
-  const [trainerName, setTrainerName] = useState();
+  const [allLocations, setAllLocations] = useState([]);
+  const [selectedLocation, setselectedLocation] = useState();
+  const [trainerName, setTrainerName] = useState("");
   
 
   const [array, setArray] = useState([])
   const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InNoYXJqZWVsc2siLCJfaWQiOiI2M2JmZmE2OTY2ZWJiYzg0MGQ4ZmZiODkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NzM1MzEyNzd9.9TU3mS2SgZLA8P3Rqop9z83fX0iWsPC1_UBi8HJXAEw"
 
+  React.useEffect(()=>{
+    axios.get(`${process.env.REACT_APP_DEVELOPMENT}/api/location/getAllLocations`,{headers:{token:accessToken}})
+    .then(res=>{
+      console.log(res)
+      setAllLocations(res.data.result)
+    })  
+  },[])
   
-  const allLocation = async()=>{
-    try {
-     const res = await axios.get("http://localhost:3002/api/location/getAllLocations",{headers:{token:`${accessToken}`}}) 
-   
-   .then(res=>{
-    setLocationName(res.data)
-    if(res.data !== undefined)
-    res.data.result.map((item)=>{
-     LocationNames.push(item.name)
-     trainerNames.push(item.trainerName)
-    })
-   })
-   
-    } catch (error) {
-      console.log('Error in Get Locaion',error);
-    }}
-
-
-
-
-
-
 
 // Here  i am start Montly data tabel 
 const {
@@ -77,41 +64,23 @@ const onSubmit = (stock) => {
   var obj = {
           value,
           value1,
-    ...stock
+          locationName:selectedLocation.name,
+          locationId:selectedLocation._id,
+          trainerName
 
   }
  
-  array.push(obj)
+  //array.push(obj)
+  axios.post(`${process.env.REACT_APP_DEVELOPMENT}/api/stock/getStockReport`,{from:value,to:value1, ...obj},{headers:{token:accessToken}})
+  .then(res=>{
+    console.log("all stockout report",res)
+  })
   console.log(obj, 'obj')
 
 
 };
 
-const handelclick = () => {
-   
-  b.push(array)
-  setB(b)
 
-
-console.log(b, 'b')
-// console.log(stock,'stock')
-} 
-    const MonthlyReportData = async()=>{
-      try {
-        
-        const res = await axios.get("http://localhost:3002/api/stock/getMonthlyReport",{headers:{token:`${accessToken}`}})
-          setData(res)
-        console.log(data.data,"DAta")
-      } catch (error) {
-        console.log(error);
-        
-      }
-    }
-
-
-    useEffect(()=>{
-        allLocation();
-    },[])
   
 
   return (
@@ -122,43 +91,46 @@ console.log(b, 'b')
        <Stack direction="row" spacing={2} margin="23px" justifyContent="center">
      {/* <TextField type="Date" sx={{width:200}} id="outlined-basic" label="" variant="outlined"  /> */}
      {/* <TextField type="Date"  format="yyyy-MM-dd HH:mm:ss" sx={{width:200}} id="outlined-basic" label="" variant="outlined"  /> */}
-     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DatePicker
-        label="From"
-        value={value1}
-        onChange={(newValue) => {
-          setValue1(newValue);
-        }}
-        renderInput={(params) => <TextField {...params} />}
+     <section>
+        <LocalizationProvider 
         
-      // inputFormat="YYYY-MM-DD" views={["day", "month", "year"]}
-      format="yyyy-MM-dd"
-      />
-    </LocalizationProvider>
-     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DatePicker
-       
-        label="To"
+        dateAdapter={AdapterDateFns} >
+        <DesktopDatePicker
+        label="Start Date"
+        inputFormat="dd/MM/yyyy"
         value={value}
         onChange={(newValue) => {
-          setValue(newValue);
+          console.log(newValue)
+          setValue(newValue)
         }}
-        renderInput={(params) => <TextField {...params} />}
-        
-        // inputFormat="YYYY-MM-DD" views={["day", "month", "year"]}
-        format="yyyy-MM-dd"
-
+        renderInput={(params) => <TextField fullWidth {...params} />}
       />
-    </LocalizationProvider>
+      </LocalizationProvider>
+      </section>
+      <section>
+        <LocalizationProvider 
+        
+        dateAdapter={AdapterDateFns} >
+        <DesktopDatePicker
+        label="Start Date"
+        inputFormat="dd/MM/yyyy"
+        value={value1}
+        onChange={(newValue) => {
+          console.log(newValue)
+          setValue1(newValue)
+        }}
+        renderInput={(params) => <TextField fullWidth {...params} />}
+      />
+      </LocalizationProvider>
+      </section>
      <Autocomplete
           disablePortal
           id="combo-box-demo"
-          value={LocationId}
           onChange={(event,newValue)=>{
-            setLocationId(newValue)
+            setselectedLocation(newValue)
           }}
-          getOptionLabel={(LocationName) => LocationName || ""}
-          options={LocationNames}
+          getOptionLabel={(LocationName) => LocationName.name || ""}
+          options={allLocations}
           sx={{ width: 200 }}
           renderInput={(params) => <TextField {...params} label="Select Location" />}
           
@@ -166,12 +138,11 @@ console.log(b, 'b')
      <Autocomplete
           disablePortal
           id="combo-box-demo"
-          value={trainerName}
           onChange={(event,newValue)=>{
             setTrainerName(newValue)
           }}
           getOptionLabel={(LocationName) => LocationName || ""}
-          options={trainerNames}
+          options={selectedLocation?selectedLocation.trainerName:[]}
           sx={{ width: 200 }}
           renderInput={(params) => <TextField {...params} label="Select Traniner" />}
           
@@ -180,7 +151,7 @@ console.log(b, 'b')
 
       
       </Stack>
-  <center> <button type="button" className=" text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative my-2" onClick={()=>MonthlyReportData()}>Submit </button></center> 
+  <center> <button type="submit" className=" text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative my-2">Submit </button></center> 
       <ThemeProvider theme={defaultMaterialTheme}>
       <MaterialTable
       data={data}

@@ -46,13 +46,8 @@ var productTypes = [];
 var Units = [];
 
 const Stockin = () => {
-  const [products, setProducts] = useState([]);
-  const [item, setItem] = useState([]);
-  const [supplierId, setSupplierId] = useState();
-  const [productName, setProductName] = useState();
   const [array, setArray] = useState([])
   const [b, setB] = useState([])
-  const [obj, setObj] = useState([])
   const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InNoYXJqZWVsc2siLCJfaWQiOiI2M2JmZmE2OTY2ZWJiYzg0MGQ4ZmZiODkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NzM1MzEyNzd9.9TU3mS2SgZLA8P3Rqop9z83fX0iWsPC1_UBi8HJXAEw"
 
   //my hooks
@@ -64,20 +59,15 @@ const Stockin = () => {
   const [productType, setProductType] = useState(null);
   const [unit, setUnit] = useState(null);
   const [selectedDate,setSelectedDate] = React.useState("")
+  const [allStocks,setAllStocks] = React.useState([])
 
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors },
     setValue
   } = useForm();
 
-  const handleChange = (event) => {
-    if (event.target.value >= 0) {
-    }
-
-  };
 
   const onSubmit = (stock) => {
 
@@ -88,13 +78,20 @@ const Stockin = () => {
       productType,
       unit,
       expiry:selectedDate,
+      docNo,
       ...stock
 
     }
     console.log(obj, 'obj')
+    axios.post(`${process.env.REACT_APP_DEVELOPMENT}/api/stock/stockIn`,{...obj},{headers:{token:accessToken}})
+    .then(res=>{
+      console.log(res)
+      setAllStocks([...allStocks,obj])
+    })
+    
 
   };
-
+  console.log(allStocks, 'allstokc')
 
 
   const getAllSuppliers = ()=>{
@@ -118,10 +115,17 @@ const Stockin = () => {
         setDocNo(res.data.result)
         
       })
+      .catch(err=>{
+        if(err.response){
+          if(err.response.data){
+
+          }
+        }
+        //console.log(err.response.data)
+      })
      getAllSuppliers()
      getAllProducts()
   }, []);
-  console.log(supplierId)
   return (
     <div className="">
        <InventoryNavbar/>
@@ -233,9 +237,8 @@ const Stockin = () => {
         <DesktopDatePicker
         label="Start Date"
         inputFormat="dd/MM/yyyy"
-        // value={selectedDate}
+        value={selectedDate}
         onChange={(newValue) => {
-          console.log(newValue)
           setSelectedDate(newValue)
         }}
         renderInput={(params) => <TextField fullWidth {...params} />}
@@ -289,7 +292,7 @@ const Stockin = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {b[0]?.map((row, id) => (
+                    {allStocks.map((row, id) => (
                       <TableRow key={id}>
                         <TableCell align="right">{id + 1}</TableCell>
                         <TableCell align="right">{row.docNo}</TableCell>
@@ -297,14 +300,14 @@ const Stockin = () => {
                         <TableCell align="right">{row.productName}</TableCell>
                         <TableCell align="right">{row.productType}</TableCell>
                         <TableCell align="right">{row.unit}</TableCell>
-                        <TableCell align="right">{row.price}</TableCell>
-                        <TableCell align="right">{row.quantity}</TableCell>
-                        <TableCell align="right">{row.expiry}</TableCell>
-                        <TableCell align="right">{row.quantity * row.Price}</TableCell>
+                        <TableCell align="right">{parseInt(row.price)}</TableCell>
+                        <TableCell align="right">{parseInt(row.quantity)}</TableCell>
+                        {/* <TableCell align="right">{row.expiry}</TableCell> */}
+                        <TableCell align="right">{parseInt(row.quantity) * parseInt(row.price)}</TableCell>
 
 
 
-                        <TableCell align="right">
+                        {/* <TableCell align="right">
                           <button align="right" onClick={()=>{
            setArray(array.filter((i)=> row.suplierNo !== i.suplierNo))
           
@@ -313,7 +316,7 @@ const Stockin = () => {
              <DeleteIcon/>
               </button>
              
-                        </TableCell>
+                        </TableCell> */}
                       </TableRow>
                     ))}
                   </TableBody>

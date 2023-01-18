@@ -61,7 +61,7 @@ function App() {
         <Route  path="/monthlyreport" element={<Monthlyreport/>} />
         <Route  path="/stockinventoty" element={<Stockinventoty/>} />
         <Route  path="/stockoutsearch" element={<Stockoutsearch/>} />
-        <Route  path="/stockoutdetails" element={<Stockoutdetails/>} />
+        <Route  path="/stockoutdetails/:id" element={<Stockoutdetails/>} />
         <Route  path="/stockoutpdf" element={<Stockoutpdf/>} />
         <Route  path="/monthlystockpdf" element={<MonthlystockPdf/>} />
  
