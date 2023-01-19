@@ -71,7 +71,7 @@ const onSubmit = (stock) => {
   }
  
   //array.push(obj)
-  axios.post(`${process.env.REACT_APP_DEVELOPMENT}/api/stock/getStockReport`,{from:value,to:value1, ...obj},{headers:{token:accessToken}})
+  axios.post(`${process.env.REACT_APP_DEVELOPMENT}/api/stock/getStockReport`,{from:date.format(value,'YYYY/MM/DD'),to:date.format(value1,'YYYY/MM/DD'), ...obj},{headers:{token:accessToken}})
   .then(res=>{
     console.log("all stockout report",res)
   })
