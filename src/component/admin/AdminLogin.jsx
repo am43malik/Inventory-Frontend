@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -9,13 +9,10 @@ import { useForm } from 'react-hook-form'
 const AdminLogin = () => {
   const navigate = useNavigate();
   const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InNoYXJqZWVsc2siLCJfaWQiOiI2M2JmZmE2OTY2ZWJiYzg0MGQ4ZmZiODkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NzM1MzEyNzd9.9TU3mS2SgZLA8P3Rqop9z83fX0iWsPC1_UBi8HJXAEw"
-   
+  const [isValid, setIsValid] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();
   const onSubmit = async(data) => {
    try {
-    console.log(data, 'data');
-
-    
     const res= await axios.post('http://localhost:3002/api/user/loginUser', data,
     {headers:{token:`${accessToken}`}})
     .then(response=>{
@@ -23,7 +20,10 @@ const AdminLogin = () => {
   })
   navigate('/adminpanel')
    } catch (error) {
-    alert("Please Cheack username and password")
+    setIsValid(true);
+    setTimeout(() => {
+        setIsValid(false);
+    }, 3000);
    }
 
 }
@@ -31,9 +31,21 @@ const AdminLogin = () => {
   return (
     <div>
 
-      
+
   <section className="bg-gray-50 ">
+
   <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+  {isValid  &&
+  <div role="alert">
+  <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2 text-center">
+    Error
+  </div>
+  <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+    <p>Cheack Username and password.</p>
+  </div>
+</div>
+      
+}
   <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-900 ">
   <img className="w-56 h-32 mr-6 mt-2" src={logo} alt="logo"/>
          

@@ -118,7 +118,7 @@ const Stockin = () => {
       .catch(err=>{
         if(err.response){
           if(err.response.data){
-
+ 
           }
         }
         //console.log(err.response.data)
