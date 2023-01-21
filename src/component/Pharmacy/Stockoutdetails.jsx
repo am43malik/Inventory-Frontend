@@ -15,6 +15,7 @@ const Stockoutdetails = () => {
       axios.post(`${process.env.REACT_APP_DEVELOPMENT}/api/stock/getStockAllStockOut`,{search:search?search:null},{headers:{token:accessToken}})
       .then(res=>{
         console.log(res)
+        setData(res.data.result)
         setStockOut(res.data.result)
       })
       .catch(err=>{
@@ -31,16 +32,13 @@ const Stockoutdetails = () => {
     const [columns, setColumns] = useState([
       { title: 'Date', field: 'name' },
       { title: 'Products Name', field: 'name' },
-      { title: 'Products Unit', field: 'name' },
-      { title: 'Qauntity', field: 'surname', initialEditValue: 'initial edit value' },
-      { title: 'Price', field: 'birthYear', type: 'numeric' },
+      { title: 'Products Unit', field: 'unit' },
+      { title: 'Qauntity', field: 'quantity'},
+     
       {title: 'total',field: 'birthCity',lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' },},
     ]);
   
-    const [data, setData] = useState([
-      { name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 },
-      { name: 'Zerya Betül', surname: 'Baran', birthYear: 2017, birthCity: 34 },
-    ]);
+    const [data, setData] = useState([]);
     const defaultMaterialTheme = createTheme();
     return (
    

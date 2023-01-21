@@ -7,8 +7,19 @@ import date from 'date-and-time';
 import { DataGrid } from '@mui/x-data-grid';
 import InventoryNavbar from '../Navbar/InventoryNavbar';
 import axios from 'axios'
+import moment from 'moment'
+import { useState } from 'react';
+const columns = [
+  { field: 'id', headerName: 'ID', width: 70 },
+  { field: 'name', headerName: 'Products Name', width: 150 },
+  { field: 'quantity', headerName: 'Quantity', width: 150 },
+  
+  { field: 'price', headerName: 'price', width: 150 },
+  {field:"createdAt",headerName:"Date",valueGetter:(param)=>moment.parseZone(param.value).local().format("DD/MM/YY"),width:120}
+];
 
 const Stockinventoty = () => {
+  const [data,setData]=useState([])
   const [selectedDate,setSelectedDate] = React.useState("")
   const [selectedDate2,setSelectedDate2] = React.useState("")
   const [allProductType,setAllProductType] = React.useState([])
@@ -19,6 +30,7 @@ const Stockinventoty = () => {
     axios.get(`${process.env.REACT_APP_DEVELOPMENT}/api/product/getAllProductType`,{headers:{token:accessToken}})
     .then(res=>{
       console.log(res)
+     
       setAllProductType(res.data.result)
     })
   },[])
@@ -28,9 +40,12 @@ const Stockinventoty = () => {
     axios.post(`${process.env.REACT_APP_DEVELOPMENT}/api/stock/getPrevStockInInfo`,{to:date.format(selectedDate,'YYYY/MM/DD'),from:date.format(selectedDate2,'YYYY/MM/DD'),productType:selectedProductType.type},{headers:{token:accessToken}})
     .then(res=>{
       console.log(res)
+      let arr = res.data.result.map((item,index)=>({...item,id:index+1}))
+      setData(arr)
     })
 
   }
+
 
 
   return (
@@ -93,21 +108,20 @@ const Stockinventoty = () => {
 
        
  <div style={{ height: 800, width: '100%', marginTop:'10px', padding:'5px'}}>
-      {/* <DataGrid
-        rows={rows}
+ <DataGrid
+        rows={data}
         columns={columns}
-        pageSize={10}
+        pageSize={100}
         rowsPerPageOptions={[10]}
-        // checkboxSelection
-      /> */}
+        checkboxSelection
+      />
     </div>
     <div className='flex justify-center'> 
       <center> <button type="submit" className=" text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative mx-2 ">Print </button></center> 
-      <center> <button type="submit" className=" text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-red-500 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative mx-2 ">Save </button></center> 
       <center> <button type="submit" className=" text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-10 mb-1 mt-1 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 relative ">Grand Total= </button></center> 
       </div>
     </div>
-  )
+  ) 
 }
 
 export default Stockinventoty

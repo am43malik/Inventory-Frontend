@@ -8,6 +8,7 @@ import date from 'date-and-time';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import InventoryNavbar from '../Navbar/InventoryNavbar';
+import moment from 'moment'
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useForm } from "react-hook-form";
@@ -19,11 +20,12 @@ const Monthlyreport = () => {
  
   const [columns, setColumns] = useState([
     { title: 'Sno', field: 'sno' },
-    { title: 'Date', field: 'Date' },
-    { title: 'Products Name/unit', field: 'productName' },
-    { title: 'company Name', field: 'companyName' },
-    { title: 'Qauntity', field: 'surname', initialEditValue: 'initial edit value' },
-    { title: 'Price', field: 'birthYear', type: 'numeric' },
+    {title:"Date" ,field:"createdAt",valueGetter:(param)=>moment.parseZone(param.value).local().format("DD/MM/YY"),width:120},
+    { title: 'Products Name/unit', field: 'name' },
+    // { title: 'company Name', field: 'companyName' },
+    { title: 'Qauntity', field: 'qauntity' },
+    { title: 'price', field: 'price' },
+    // { title: 'Price', field: 'birthYear', type: 'numeric' },
     {title: 'total',field: 'birthCity',lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' },},
   ]);
 
@@ -47,6 +49,7 @@ const Monthlyreport = () => {
     .then(res=>{
       console.log(res)
       setAllLocations(res.data.result)
+     
     })  
   },[])
   
@@ -74,6 +77,7 @@ const onSubmit = (stock) => {
   axios.post(`${process.env.REACT_APP_DEVELOPMENT}/api/stock/getStockReport`,{from:date.format(value,'YYYY/MM/DD'),to:date.format(value1,'YYYY/MM/DD'), ...obj},{headers:{token:accessToken}})
   .then(res=>{
     console.log("all stockout report",res)
+    setData(res.data.result)
   })
   console.log(obj, 'obj')
 
