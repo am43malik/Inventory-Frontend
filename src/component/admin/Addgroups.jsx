@@ -8,7 +8,7 @@ const Addgroups = () => {
   const [text,setText]=useState(<AdminPanel/>)
   return (
     <div>
-    <AdminNavbar/>
+    <AdminNavbar/> 
 <div className='flex items-center justify-center mt-4'>
  
   <button className="flex px-3 py-2 bg-blue-400 mr-1 text-white font-semibold rounded"  onClick={()=> setText(<AdminPanel/>)}>

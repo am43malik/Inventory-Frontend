@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 // import logo from '../../images/logo1.jfif'
 import logo from '../../images/inventory.jpg'
 const UserLogin = () => {
+    const [isValid, setIsValid] = useState(false);
     const navigate = useNavigate();
     const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InNoYXJqZWVsc2siLCJfaWQiOiI2M2JmZmE2OTY2ZWJiYzg0MGQ4ZmZiODkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NzM1MzEyNzd9.9TU3mS2SgZLA8P3Rqop9z83fX0iWsPC1_UBi8HJXAEw"
      
@@ -21,8 +22,11 @@ const UserLogin = () => {
     })
     navigate('/productslist')
      } catch (error) {
-      alert("Please Cheack username and password")
-     }
+        setIsValid(true);
+        setTimeout(() => {
+            setIsValid(false);
+        }, 3000);
+       }
   
   }
   
@@ -30,6 +34,17 @@ const UserLogin = () => {
     <div>
         <section className="bg-gray-50 ">
   <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+  {isValid  &&
+  <div role="alert">
+  <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2 text-center">
+    Error
+  </div>
+  <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+    <p>Cheack Username and password.</p>
+  </div>
+</div>
+      
+}
       <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-900 ">
       <img className="w-60 h-36 mr-6" src={logo} alt="logo"/>
       </a>

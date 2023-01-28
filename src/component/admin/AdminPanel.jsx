@@ -7,28 +7,35 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 
-
+ 
 const AdminPanel = () => {
  const [data, setData] = useState([])
-  
+ const [isValid, setIsValid] = useState(false);
   const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InNoYXJqZWVsc2siLCJfaWQiOiI2M2JmZmE2OTY2ZWJiYzg0MGQ4ZmZiODkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NzM1MzEyNzd9.9TU3mS2SgZLA8P3Rqop9z83fX0iWsPC1_UBi8HJXAEw"
  
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const onSubmit = async(data) => {
+  const onSubmit = async(data,event) => {
    
-    console.log(data, 'data');
-    
-    
-        const res= await axios.post('http://localhost:3002/api/user/createUser', data,
-        {headers:{token:`${accessToken}`}})
-        .then(response=>{
-        console.log(response, 'res')
-        
-      })
-      .catch(err =>{
-        console.log(err)
-      })
 
+    try {
+      const res= await axios.post('http://localhost:3002/api/user/createUser', data,
+      {headers:{token:`${accessToken}`}})
+      .then(response=>{
+      console.log(response, 'res')
+      
+    })
+    setIsValid(true);
+    setTimeout(() => {
+        setIsValid(false);
+    }, 1000);
+      // alert("Supplier Add succsefully")
+      event.target.reset();
+    } catch (error) {
+      alert(error)
+    }
+    
+
+      
 }
 
 useEffect(() => {
@@ -41,9 +48,19 @@ useEffect(() => {
   return (
     <div>
       <AdminNavbar />
+
       <section className="bg-gray-50 ">
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+        {isValid  &&
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3rounded relative" role="alert">
+      <strong class="font-bold"> User Created successfully!</strong>
+  
+ 
+    </div>
+      
+}
           <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-900 ">
+            
             <img className="w-56 h-32 mr-6 mt-2" src={logo} alt="logo" />
 
           </a>
@@ -58,14 +75,14 @@ useEffect(() => {
                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
                       User Name
                     </label>
-                    <input {...register("userName", { required: true })} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name"  type="text" placeholder="Jane" />
+                    <input {...register("userName", { required: true })} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name"  type="text" placeholder="Jane" required />
 
                   </div>
                   <div className="w-full md:w-1/2 px-3">
                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-last-name">
                       Passwod
                     </label>
-                    <input {...register("password", { required: true })} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text"  placeholder="********" />
+                    <input {...register("password", { required: true })} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text"  placeholder="********"  required/>
                   </div>
                 </div>
                 <div className="flex flex-wrap -mx-3 mb-6">
